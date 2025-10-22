@@ -1,17 +1,60 @@
-// Mobile menu toggle
+// Mobile menu toggle with improved handling
 const navToggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.nav');
+const body = document.body;
+let isAnimating = false;
 
-navToggle.addEventListener('click', () => {
-  nav.classList.toggle('active');
-  navToggle.innerHTML = nav.classList.contains('active') ? '×' : '☰';
+function toggleNav() {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  const isActive = nav.classList.contains('active');
+  
+  // First, ensure the nav is displayed if we're opening it
+  if (!isActive) {
+    nav.style.display = 'flex';
+    // Small delay to ensure display: flex is applied before animation
+    setTimeout(() => {
+      nav.classList.add('active');
+    }, 10);
+  } else {
+    nav.classList.remove('active');
+    // Wait for transition to finish before hiding
+    setTimeout(() => {
+      nav.style.display = 'none';
+    }, 300);
+  }
+
+  navToggle.innerHTML = !isActive ? '×' : '☰';
+  body.style.overflow = !isActive ? 'hidden' : '';
+  
+  // Reset animation flag after transition
+  setTimeout(() => {
+    isAnimating = false;
+  }, 300);
+}
+
+navToggle.addEventListener('click', toggleNav);
+
+// Improved outside click handling
+nav.addEventListener('click', (e) => {
+  // Close menu when clicking nav links
+  if (e.target.tagName === 'A') {
+    toggleNav();
+  }
 });
 
 // Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
   if (!nav.contains(e.target) && !navToggle.contains(e.target) && nav.classList.contains('active')) {
-    nav.classList.remove('active');
-    navToggle.innerHTML = '☰';
+    toggleNav();
+  }
+});
+
+// Handle escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && nav.classList.contains('active')) {
+    toggleNav();
   }
 });
 
