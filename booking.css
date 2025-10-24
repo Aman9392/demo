@@ -1,0 +1,72 @@
+.time-slot {
+    padding: 8px 16px;
+    margin: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+}
+
+.time-slot:not(.booked):hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.time-slot.booked {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border-color: #ffcdd2;
+    cursor: not-allowed;
+    opacity: 0.8;
+    text-decoration: line-through;
+}
+
+.time-slot.selected {
+    background-color: #e8f5e9;
+    border-color: #66bb6a;
+    color: #2e7d32;
+}
+
+.booked-icon {
+    margin-left: 8px;
+    font-size: 14px;
+}
+
+/* Calendar improvements */
+.date-cell {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.date-cell.has-slots:after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #4caf50;
+}
+
+.date-cell.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+#timeSlots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}

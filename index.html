@@ -21,6 +21,7 @@
         <a href="#gallery">Gallery</a>
         <a href="#pricing">Pricing</a>
         <a href="#contact">Contact</a>
+        <a href="/admin.html">Admin</a>
         <!-- <button class="cta" id="bookTop">Book Appointment</button> -->
         <a class="cta" href="#appointment">Book Appointment</a>
     
@@ -181,22 +182,66 @@
     <section id="appointment" class="section fade-in pale">
       <div class="container narrow">
         <h2>Book an Appointment</h2>
-        <form id="bookingForm" class="form-grid" onsubmit="return handleBooking(event)">
-          <label><span>Name</span><input type="text" name="name" required /></label>
-          <label><span>Phone</span><input type="tel" name="phone" required pattern='[0-9+\s-]{7,}' /></label>
-          <label><span>Service</span>
-            <select name="service" required>
-              <option value="">Select a service</option>
-              <option>Hair Styling</option>
-              <option>Skin Care</option>
-              <option>Makeup</option>
-              <option>Spa</option>
-              <option>Nail Art</option>
-            </select>
-          </label>
-          <label><span>Preferred Date & Time</span><input type="datetime-local" name="datetime" /></label>
-          <label class="full"><button class="btn primary" type="submit">Confirm Booking</button></label>
-        </form>
+        <div class="booking-container">
+          <!-- Calendar View -->
+          <div class="calendar-section">
+            <div class="calendar-header">
+              <button id="prevMonth" class="btn ghost">←</button>
+              <h3 id="currentMonth">October 2025</h3>
+              <button id="nextMonth" class="btn ghost">→</button>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-days">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+              </div>
+              <div id="calendarDates" class="calendar-dates">
+                <!-- Calendar dates will be inserted here by JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Time Slots -->
+          <div class="time-slots-section">
+            <h4>Available Time Slots</h4>
+            <div id="timeSlots" class="time-slots-grid">
+              <!-- Time slots will be inserted here by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Booking Form -->
+          <form id="bookingForm" class="form-grid">
+            <label><span>Name</span><input type="text" name="name" required /></label>
+            <label><span>Phone</span><input type="tel" name="phone" required pattern='[0-9+\s-]{7,}' /></label>
+            <label><span>Email</span><input type="email" name="email" required /></label>
+            <label><span>Service</span>
+              <select name="service" required>
+                <option value="">Select a service</option>
+                <option>Hair Styling</option>
+                <option>Skin Care</option>
+                <option>Makeup</option>
+                <option>Spa</option>
+                <option>Nail Art</option>
+              </select>
+            </label>
+            <label class="full"><span>Message or Special Requests</span>
+              <textarea name="message" rows="3" placeholder="Any special requirements, concerns, or preferences..."></textarea>
+            </label>
+            <div class="selected-slot-info">
+              <p>Selected Date: <span id="selectedDate">Not selected</span></p>
+              <p>Selected Time: <span id="selectedTime">Not selected</span></p>
+            </div>
+            <input type="hidden" name="selectedDateTime" id="selectedDateTime" />
+            <label class="full">
+              <button class="btn primary" type="submit" id="submitBooking">Confirm Booking</button>
+            </label>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -229,5 +274,6 @@
     </div>
   </footer>
   <script src="script.js"></script>
+  <script src="booking.js"></script>
 </body>
 </html>
