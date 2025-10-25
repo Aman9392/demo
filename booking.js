@@ -346,6 +346,23 @@ class BookingCalendar {
     }
 }
 
+// Alert handling function
+function showAlert(message, type = 'success') {
+    const alert = document.querySelector('.custom-alert');
+    alert.textContent = message;
+    alert.className = 'custom-alert ' + type;
+    alert.style.display = 'block';
+    alert.classList.add('show');
+
+    // Hide alert after 3 seconds
+    setTimeout(() => {
+        alert.classList.remove('show');
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 300);
+    }, 3000);
+}
+
 // Initialize booking form handling
 document.addEventListener('DOMContentLoaded', async () => {
     // Create calendar instance, then explicitly initialize it so booked slots
@@ -357,11 +374,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
 
         if (!calendar.selectedDate || !calendar.selectedTime) {
-            alert('Please select a date and time for your appointment');
+            showAlert('Please select a date and time for your appointment', 'error');
             return;
         }
 
         const formData = new FormData(e.target);
+        const loadingSpinner = document.querySelector('.loading-spinner');
         
         // Get the selected date
         const selectedDate = calendar.selectedDate;
@@ -385,13 +403,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 body: JSON.stringify(bookingData)
             });
 
-            alert('Booking submitted successfully!');
+            showAlert('Booking submitted successfully!');
             calendar.fetchBookedSlots(); // Refresh booked slots
             e.target.reset();
             
@@ -404,7 +425,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
         } catch (error) {
             console.error('Error submitting booking:', error);
-            alert('There was an error submitting your booking. Please try again.');
+            showAlert('There was an error submitting your booking. Please try again.', 'error');
+        } finally {
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
         }
     });
 });

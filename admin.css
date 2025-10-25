@@ -6,6 +6,123 @@
     padding: 0;
 }
 
+/* Custom Alert Styles */
+.custom-alert {
+    display: none;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    min-width: 320px;
+    padding: 16px 20px;
+    background: #ffffff;
+    color: #333333;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.custom-alert::before {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.custom-alert.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.custom-alert.success {
+    border-left: 4px solid #10B981;
+}
+
+.custom-alert.success::before {
+    content: '\f00c';
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.custom-alert.error {
+    border-left: 4px solid #EF4444;
+}
+
+.custom-alert.error::before {
+    content: '\f00d';
+    color: #EF4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Dark mode support for alerts */
+@media (prefers-color-scheme: dark) {
+    .custom-alert {
+        background: #1F2937;
+        color: #F3F4F6;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: none;
+    width: 40px;
+    height: 40px;
+    margin: 20px auto;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #d9a59e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.table-loading .loading-spinner {
+    display: block;
+}
+
+.table-loading .table-container {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Operation Loading */
+.operation-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.operation-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
 body {
     margin: 0;
     background: #fffaf9;

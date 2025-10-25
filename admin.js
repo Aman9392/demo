@@ -1,5 +1,52 @@
 // Replace with your deployed Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzXcUxgFCKUXeOdKSEY_V74bJmO99_Ae5Ihpehf_YjT_4OHxkD-Hpkv0783Yv9XfvKMIw/exec'; // Replace this with the URL from your new deployment
+
+// Alert handling function
+function showAlert(message, type = 'success') {
+    const alert = document.querySelector('.custom-alert');
+    alert.textContent = message;
+    alert.className = 'custom-alert ' + type;
+    alert.style.display = 'block';
+    
+    // Ensure any existing timeouts are cleared
+    if (alert.hideTimeout) {
+        clearTimeout(alert.hideTimeout);
+        clearTimeout(alert.removeTimeout);
+    }
+    
+    // Force a reflow before adding the show class
+    alert.offsetHeight;
+    alert.classList.add('show');
+
+    // Set new timeouts
+    alert.hideTimeout = setTimeout(() => {
+        alert.classList.remove('show');
+        alert.removeTimeout = setTimeout(() => {
+            alert.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
+
+// Loading state management
+function setLoading(isLoading) {
+    const tableWrap = document.querySelector('.admin-wrap');
+    if (isLoading) {
+        tableWrap.classList.add('table-loading');
+    } else {
+        tableWrap.classList.remove('table-loading');
+    }
+}
+
+// Set button loading state
+function setButtonLoading(button, isLoading) {
+    if (isLoading) {
+        button.classList.add('operation-loading');
+        button.disabled = true;
+    } else {
+        button.classList.remove('operation-loading');
+        button.disabled = false;
+    }
+}
 async function fetchBookings() {
   try {
     console.log('Fetching bookings from', SCRIPT_URL + '?action=getBookings');
@@ -114,28 +161,38 @@ function renderBookings(list) {
     `;
 
     // Save action
-    tr.querySelector('.btn-confirm').addEventListener('click', async () => {
+    const saveBtn = tr.querySelector('.btn-confirm');
+    saveBtn.addEventListener('click', async () => {
       try {
+        setButtonLoading(saveBtn, true);
         const newStatus = tr.querySelector('.select-status').value;
         await updateStatus(b.id, newStatus);
-        alert('Status updated successfully');
+        showAlert('Status updated successfully');
         await refresh();
       } catch (err) {
         console.error('Save action failed:', err);
-        alert(err.message);
+        showAlert(err.message, 'error');
+      } finally {
+        setButtonLoading(saveBtn, false);
       }
     });
 
     // Delete action
-    tr.querySelector('.btn-delete').addEventListener('click', async () => {
+    const deleteBtn = tr.querySelector('.btn-delete');
+    deleteBtn.addEventListener('click', async () => {
+      const shouldDelete = window.confirm('Are you sure you want to delete this booking?');
+      if (!shouldDelete) return;
+      
       try {
-        if (!confirm('Delete booking ' + b.id + '?')) return;
+        setButtonLoading(deleteBtn, true);
         await deleteBooking(b.id);
-        alert('Booking deleted successfully');
+        showAlert('Booking deleted successfully');
         await refresh();
       } catch (err) {
         console.error('Delete action failed:', err);
-        alert(err.message);
+        showAlert(err.message, 'error');
+      } finally {
+        setButtonLoading(deleteBtn, false);
       }
     });
 
@@ -239,6 +296,7 @@ function escapeHtml(unsafe) {
 // Filters & UI
 async function refresh() {
   try {
+    setLoading(true);
     const all = await fetchBookings();
     console.log('Fetched bookings:', all);
 
@@ -268,7 +326,9 @@ async function refresh() {
     renderBookings(list);
   } catch (err) {
     console.error('Refresh error:', err);
-    alert('Failed to load bookings: ' + err.message);
+    showAlert('Failed to load bookings: ' + err.message, 'error');
+  } finally {
+    setLoading(false);
   }
 }
 
